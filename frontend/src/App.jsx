@@ -2,11 +2,11 @@ import React from 'react'
 import Dashboard from './pages/Dashboard'
 import Login from './pages/Login'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Payment from './pages/Payment'
-import Maintainance from './pages/maintenance'
+import Payment from './pages/Payments'
+import Maintainance from './pages/Maitainance'
 import Properties from './pages/Properties'
 import Register from './pages/Register'
-import Tenant from './pages/tenant'
+import Tenant from './pages/Tenants'
 
 function App() {
   return (
