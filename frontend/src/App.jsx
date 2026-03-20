@@ -4,6 +4,11 @@ import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
 
+// Inside component return statement:
+<h1 className="text-3xl font-bold text-blue-600 underline">
+  Hello Real Estate Project!
+</h1>
+
 function App() {
   const [count, setCount] = useState(0)
 
