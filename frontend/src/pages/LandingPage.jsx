@@ -6,7 +6,7 @@ function LandingPage() {
     <div className='bg-[#20063B] h-screen'>
       <Navbar />
       <div>
-        <Dashboard />
+       
       </div>
     </div>
   )
