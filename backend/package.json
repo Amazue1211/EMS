@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "express": "^5.2.1",
-    "mime-db": "^1.54.0"
-  }
-}

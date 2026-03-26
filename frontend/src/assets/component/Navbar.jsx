@@ -1,5 +1,5 @@
 import React from 'react'
-
+import {Link} from 'react-router-dom'
 function Navbar() {
   return (
     <div className='style={{ fontFamily: "Inter, sans-serif" }}'>
@@ -22,7 +22,7 @@ function Navbar() {
             className='cursor-pointer
          bg-gradient-to-l from-purple-400 via-purple-600 to-purple-900 p-[3px] pl-[10px] rounded-2xl
             '
-            >Get started</button>
+            ><Link to="/login">Get started</Link></button>
         </div>
 </div>
     </div>

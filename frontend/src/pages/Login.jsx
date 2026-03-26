@@ -1,101 +1,220 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { useFormik } from 'formik'
+import { Home, Users, Settings } from "lucide-react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { Link } from 'react-router-dom';
 
-const initialValues = {
-  email: "",
-  password: ""
-}
+const API = "http://localhost:5000/api";
 
-const user = {
-  email: "amazue@gmail.com",
-  password: "chima12345"
-}
+// 🔐 Axios instance with token
+const api = axios.create({
+  baseURL: API,
+});
 
-const validate = values => {
-  const errors = {}
-
-  if (!values.email) {
-    errors.email = 'Required'
-  } else if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i.test(values.email)) {
-    errors.email = 'Invalid email format'
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
+  return config;
+});
 
-  if (!values.password) {
-    errors.password = 'Required'
-  } else if (values.password.length < 8) {
-    errors.password = 'Password must be at least 8 characters'
-  }
+// ---------------- AUTH PAGES ----------------
+export function Login({ setPage, setAuth }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  return errors
-}
-
-function Login() {
-  const formik = useFormik({
-    initialValues,
-    validate,
-    onSubmit: values => {
-      if (values.email === user.email && values.password === user.password) {
-        alert("Welcome!")
-      } else {
-        alert("Invalid credentials")
-      }
+  async function handleLogin(e) {
+    e.preventDefault();
+    try {
+      const res = await api.post("/auth/login", { email, password });
+      localStorage.setItem("token", res.data.token);
+      setAuth(true);
+      setPage("dashboard");
+    } catch (error) {
+      const message = error && error.response && error.response.data && error.response.data.message
+        ? error.response.data.message
+        : "Login failed";
+      alert(message);
     }
-  })
+  }
 
   return (
-    <div className='flex justify-center flex-wrap bg-[#efeaeaec] h-[1000px]'>
-      <form 
-        onSubmit={formik.handleSubmit} 
-        className='bg-[#d9d9e7dc] w-[400px] p-[40px] rounded-[10px] shadow-2xl mt-[100px] h-[400px]'
-      >
-        <label htmlFor="email">Email</label><br />
-        <input
-          type="email"
-          id="email"
-          name="email"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.email}
-          className='bg-[#3566bb50] w-[320px] h-[50px] rounded-[10px] mb-[20px] outline-none p-[10px] mt-[20px]'
-          placeholder='Input Email/Phone number'
-          autoComplete='on'
-        />
-        {formik.touched.email && formik.errors.email ? (
-          <div className='text-red-600'>{formik.errors.email}</div>
-        ) : null}
-        <br />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 to-pink-500">
+      <div className="bg-white/10 backdrop-blur-md p-8 rounded-2xl w-full max-w-md text-white shadow-lg">
+        <h2 className="text-2xl font-semibold mb-6 text-center">Login</h2>
 
-        <label htmlFor="password">Password</label><br />
-        <input
-          type="password"
-          id="password"
-          name="password"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.password}
-          className='bg-[#3566bb50] w-[320px] h-[50px] rounded-[10px] mt-[20px] outline-none p-[10px]'
-          placeholder='Password'
-        />
-        {formik.touched.password && formik.errors.password ? (
-          <div className='text-red-600'>{formik.errors.password}</div>
-        ) : null}
-        <br />
+        <form onSubmit={handleLogin} className="flex flex-col gap-4">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="p-3 rounded-lg bg-white/20 outline-none placeholder-white"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="p-3 rounded-lg bg-white/20 outline-none placeholder-white"
+          />
 
-        <button 
-          type='submit' 
-          className='mt-[30px] text-[25px] bg-[#3566bb50] w-[320px] rounded-[20px] h-[50px] cursor-pointer mb-[20px]'
-        >
-          Login
-        </button>
+          <button type="submit" className="bg-white text-purple-600 font-semibold py-3 rounded-lg">
+            Sign In
+          </button>
+        </form>
 
-        <div className='gap-[40px] justify-between flex list-none'>
-          <li><Link to='/sign'>Sign up</Link></li>
-          <li><Link>Forgot password</Link></li>
-        </div>
-      </form>
+        <p className="text-sm text-center mt-4">
+          Don’t have an account?{' '}
+          <span onClick={() => setPage("register")} className="underline cursor-pointer">
+            Register
+          </span>
+        </p>
+      </div>
     </div>
-  )
+  );
 }
 
-export default Login
+export function Register({ setPage }) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  async function handleRegister(e) {
+    e.preventDefault();
+    try {
+      await api.post("/auth/register", { name, email, password });
+      alert("Account created, please login");
+      setPage("login");
+    } catch (error) {
+      const message = error && error.response && error.response.data && error.response.data.message
+        ? error.response.data.message
+        : "Register failed";
+      alert(message);
+    }
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 to-pink-500">
+      <div className="bg-white/10 backdrop-blur-md p-8 rounded-2xl w-full max-w-md text-white shadow-lg">
+        <h2 className="text-2xl font-semibold mb-6 text-center">Register</h2>
+
+        <form onSubmit={handleRegister} className="flex flex-col gap-4">
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="p-3 rounded-lg bg-white/20 outline-none placeholder-white"
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="p-3 rounded-lg bg-white/20 outline-none placeholder-white"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="p-3 rounded-lg bg-white/20 outline-none placeholder-white"
+          />
+
+          <button type="submit" className="bg-white text-purple-600 font-semibold py-3 rounded-lg">
+            Create Account
+          </button>
+        </form>
+
+        <p className="text-sm text-center mt-4">
+          Already have an account?{' '}
+          <span onClick={() => setPage("login")} className="underline cursor-pointer">
+            Login
+          </span>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ---------------- DASHBOARD ----------------
+export default function Dashboard() {
+  const [page, setPage] = useState("login");
+  const [isAuth, setAuth] = useState(!!localStorage.getItem("token"));
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const res = await api.get("/auth/me");
+        setUser(res.data);
+      } catch (error) {
+        localStorage.removeItem("token");
+        setAuth(false);
+      }
+    }
+
+    if (isAuth) fetchUser();
+  }, [isAuth]);
+
+  if (!isAuth) {
+    if (page === "register") return <Register setPage={setPage} />;
+    return <Login setPage={setPage} setAuth={setAuth} />;
+  }
+
+  return (
+    <div className="flex min-h-screen bg-gradient-to-br from-purple-600 to-pink-500 text-white">
+      <aside className="w-64 bg-black/20 backdrop-blur-md p-6 flex flex-col gap-6">
+        <h1 className="text-2xl font-bold tracking-tight">EMS</h1>
+
+        <nav className="flex flex-col gap-4">
+          <button className="flex items-center gap-3 hover:text-pink-300">
+            <Home size={20} /> Dashboard
+          </button>
+          <button className="flex items-center gap-3 hover:text-pink-300">
+            <Users size={20} /> Tenants
+          </button>
+          <button className="flex items-center gap-3 hover:text-pink-300">
+            <Settings size={20} /> Settings
+          </button>
+        </nav>
+
+        <div className="mt-auto">
+          <p className="text-sm">{user && user.name}</p>
+          <button
+            onClick={() => {
+              localStorage.removeItem("token");
+              setAuth(false);
+              setPage("login");
+            }}
+            className="text-sm hover:text-pink-300"
+          >
+            Logout
+          </button>
+        </div>
+      </aside>
+
+      <main className="flex-1 p-8">
+        <h2 className="text-3xl font-semibold mb-6">Welcome, {user && user.name ? user.name : "User"}</h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white/10 p-6 rounded-2xl shadow-lg">
+            <h3 className="text-lg">Total Tenants</h3>
+            <p className="text-2xl font-bold mt-2">120</p>
+          </div>
+
+          <div className="bg-white/10 p-6 rounded-2xl shadow-lg">
+            <h3 className="text-lg">Available Rooms</h3>
+            <p className="text-2xl font-bold mt-2">15</p>
+          </div>
+
+          <div className="bg-white/10 p-6 rounded-2xl shadow-lg">
+            <h3 className="text-lg">Revenue</h3>
+            <p className="text-2xl font-bold mt-2">₦2.4M</p>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
