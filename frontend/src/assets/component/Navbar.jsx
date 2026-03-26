@@ -1,6 +1,7 @@
 import React from 'react'
 import {Link, NavLink} from 'react-router-dom'
-import Hamburger from 'hamburger-react'
+
+import HamburgerComponent from './Hamburger'
 function Navbar() {
 
 const navLinks = [
@@ -15,7 +16,7 @@ const navLinks = [
     <div className='style={{ fontFamily: "Inter, sans-serif" }}'>
 <div className='flex justify-between p-[20px] font-poppins text-[18px] backdrop:backdrop-blur-2xl bg-white/30 fixed w-full z-10'>
     <div>
-        <h1 className='text-white pt-[10px]'>EMS  <br />     <spam className='md:hidden'> <Hamburger/></spam></h1>
+        <h1 className='text-white pt-[10px]'>EMS  <br />     <spam className='md:hidden'> <HamburgerComponent/></spam></h1>
 </div>
         <nav>
        
