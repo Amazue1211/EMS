@@ -1,6 +1,6 @@
 import React from 'react'
 import Navbar from '../assets/component/Navbar'
-function Payments() {
+function About() {
   return (
     <div  className='bg-[#20063B] h-screen'>
       <Navbar />
@@ -8,4 +8,4 @@ function Payments() {
   )
 }
 
-export default Payments
+export default About

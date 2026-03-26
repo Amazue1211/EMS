@@ -6,7 +6,7 @@ import Payment from './pages/Payments'
 import Maintainance from './pages/Maitainance'
 import Properties from './pages/Properties'
 import Register from './pages/Register'
-import Tenant from './pages/Tenants'
+import About from './pages/About'
 import LandingPage from './pages/LandingPage'
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
         <Route path="/maintenance" element={<Maintainance />} />
         <Route path="/properties" element={<Properties />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/tenant" element={<Tenant />} />
+        <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
       </Routes>
     </Router>

@@ -1,8 +1,10 @@
 import React from 'react'
-
+import Navbar from '../assets/component/Navbar'
 function Properties() {
   return (
-    <div>Properties</div>
+    <div  className='bg-[#20063B] h-screen'>
+      <Navbar />
+    </div>
   )
 }
 
